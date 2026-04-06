@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OncoYoga AI — Yoga oncológico personalizado con inteligencia artificial</title>
+<meta name="description" content="La primera plataforma de yoga oncológico personalizado con IA de la Unión Europea. Para pacientes con cáncer, cuidadores y familias."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#1C1A2E;--plum:#4A3A6B;--plum-m:#7F77DD;--plum-l:#EEEDFE;
+  --teal:#0F6E56;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --rose:#C7A0B8;--cream:#F8F5F0;--warm:#F2EDE8;
+  --mid:#6B6870;--light:#B8B5C0;--white:#FFFFFF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;line-height:1.6}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 64px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(248,245,240,0.88);
+  border-bottom:1px solid rgba(74,58,107,0.08);
+  transition:padding .3s,box-shadow .3s;
+}
+nav.scrolled{padding:14px 64px;box-shadow:0 4px 24px rgba(28,26,46,0.06)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--plum);text-decoration:none;letter-spacing:.01em}
+.nav-logo span{color:var(--teal);font-style:italic}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-link{font-size:14px;color:var(--mid);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--plum)}
+.nav-cta{background:var(--plum);color:white;padding:10px 24px;border-radius:100px;font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;border:none;cursor:pointer}
+.nav-cta:hover{background:#3A2D57;transform:translateY(-1px);box-shadow:0 6px 20px rgba(74,58,107,0.3)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
+  padding:120px 64px 80px;gap:80px;align-items:center;
+  position:relative;overflow:hidden;
+}
+.hero-blob{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 55% 60% at 75% 45%,rgba(74,58,107,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 45% 50% at 15% 75%,rgba(15,110,86,0.06) 0%,transparent 65%),
+    radial-gradient(ellipse 30% 30% at 90% 10%,rgba(199,160,184,0.08) 0%,transparent 60%);
+}
+.hero-content{position:relative;z-index:1}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--teal-l);color:var(--teal);
+  padding:6px 16px;border-radius:100px;
+  font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:32px;
+}
+.badge-dot{width:6px;height:6px;background:var(--teal);border-radius:50%;flex-shrink:0}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(42px,5.5vw,70px);font-weight:300;line-height:1.08;
+  color:var(--ink);margin-bottom:28px;letter-spacing:-.025em;
+}
+h1 em{font-style:italic;color:var(--plum)}
+h1 .green{color:var(--teal)}
+.hero-sub{font-size:17px;font-weight:300;color:var(--mid);line-height:1.8;max-width:480px;margin-bottom:48px}
+.hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.btn-primary{
+  background:var(--plum);color:white;padding:16px 36px;border-radius:100px;
+  font-size:15px;font-weight:500;text-decoration:none;transition:all .25s;
+  display:inline-block;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.btn-primary:hover{background:#3A2D57;transform:translateY(-2px);box-shadow:0 10px 28px rgba(74,58,107,0.28)}
+.btn-ghost{
+  color:var(--plum);font-size:15px;font-weight:400;text-decoration:none;
+  display:flex;align-items:center;gap:8px;transition:gap .2s;
+}
+.btn-ghost:hover{gap:14px}
+.btn-ghost::after{content:'→'}
+.hero-trust{display:flex;gap:24px;margin-top:48px;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--light)}
+.trust-item svg{color:var(--teal);flex-shrink:0}
+
+/* hero image mosaic */
+.hero-visual{position:relative;z-index:1;height:560px}
+.img-mosaic{position:relative;width:100%;height:100%}
+.img-card{
+  position:absolute;border-radius:20px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(28,26,46,0.15);
+}
+.img-card img{width:100%;height:100%;object-fit:cover;display:block}
+.img-card:nth-child(1){width:62%;height:58%;top:0;right:0;animation:float1 7s ease-in-out infinite}
+.img-card:nth-child(2){width:48%;height:46%;bottom:0;left:0;animation:float2 8s ease-in-out infinite}
+.img-card:nth-child(3){width:36%;height:32%;top:44%;right:4%;animation:float3 6s ease-in-out infinite}
+.img-pill{
+  position:absolute;background:white;border-radius:16px;
+  padding:14px 20px;box-shadow:0 8px 32px rgba(28,26,46,0.12);
+  display:flex;align-items:center;gap:12px;z-index:2;
+}
+.img-pill.top{top:8%;left:2%;animation:float2 9s ease-in-out infinite}
+.img-pill.bottom{bottom:18%;right:-2%;animation:float1 10s ease-in-out infinite}
+.pill-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pill-icon.green{background:var(--teal-l)}
+.pill-icon.purple{background:var(--plum-l)}
+.pill-text-main{font-size:14px;font-weight:500;color:var(--ink)}
+.pill-text-sub{font-size:11px;color:var(--mid)}
+@keyframes float1{0%,100%{transform:translateY(0px)}50%{transform:translateY(-12px)}}
+@keyframes float2{0%,100%{transform:translateY(0px)}50%{transform:translateY(-8px)}}
+@keyframes float3{0%,100%{transform:translateY(0px)}50%{transform:translateY(-16px)}}
+
+/* ── LOGOS STRIP ── */
+.logos-strip{
+  background:var(--white);border-top:1px solid rgba(74,58,107,0.08);
+  border-bottom:1px solid rgba(74,58,107,0.08);
+  padding:24px 64px;
+  display:flex;align-items:center;gap:0;flex-wrap:wrap;
+}
+.logos-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--light);font-weight:500;white-space:nowrap;margin-right:40px}
+.logos-items{display:flex;gap:40px;flex-wrap:wrap;align-items:center}
+.logo-item{
+  font-size:12px;font-weight:500;color:var(--light);
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.logo-dot{width:4px;height:4px;background:var(--teal-m);border-radius:50%;flex-shrink:0}
+.medical-pill{
+  margin-left:auto;background:var(--teal-l);border:1px solid rgba(15,110,86,0.2);
+  border-radius:100px;padding:8px 20px;
+  display:flex;align-items:center;gap:10px;
+}
+.med-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;flex-shrink:0;animation:blink 2s ease-in-out infinite}
+.med-text{font-size:12px;color:var(--teal);font-weight:500}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── SECTION BASE ── */
+section{padding:100px 64px}
+.sec-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);font-weight:500;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.sec-label::after{content:'';flex:1;max-width:36px;height:1px;background:var(--teal);opacity:.4}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,50px);font-weight:300;line-height:1.12;letter-spacing:-.02em;margin-bottom:20px;color:var(--ink)}
+h2 em{font-style:italic;color:var(--plum)}
+.sec-sub{font-size:16px;font-weight:300;color:var(--mid);line-height:1.8;max-width:540px}
+
+/* ── FOR WHOM ── */
+.for-section{background:var(--white)}
+.for-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:80px;align-items:start;margin-top:60px}
+.for-tabs{display:flex;flex-direction:column;gap:0;border-left:2px solid rgba(74,58,107,0.1)}
+.for-tab{
+  padding:28px 32px;cursor:pointer;
+  border-left:2px solid transparent;margin-left:-2px;
+  transition:all .2s;
+}
+.for-tab.active{border-left-color:var(--plum);background:var(--plum-l)}
+.for-tab-num{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--light);letter-spacing:.08em;margin-bottom:6px}
+.for-tab-title{font-size:17px;font-weight:500;color:var(--ink);margin-bottom:4px;transition:color .2s}
+.for-tab.active .for-tab-title{color:var(--plum)}
+.for-tab-short{font-size:13px;color:var(--mid);transition:opacity .2s}
+.for-content{position:relative}
+.for-panel{display:none;animation:fadeSlide .4s ease}
+.for-panel.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.for-img{width:100%;height:360px;object-fit:cover;border-radius:20px;margin-bottom:32px;display:block}
+.for-desc{font-size:16px;color:var(--mid);line-height:1.8;margin-bottom:28px}
+.for-features{display:flex;flex-direction:column;gap:12px}
+.for-feature{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--mid)}
+.for-feature::before{content:'✓';width:20px;height:20px;background:var(--teal-l);color:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;line-height:20px;text-align:center}
+
+/* ── HOW ── */
+.how-section{background:var(--ink);position:relative;overflow:hidden}
+.how-glow{position:absolute;top:-200px;right:-100px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(74,58,107,0.35) 0%,transparent 70%);pointer-events:none}
+.how-glow2{position:absolute;bottom:-150px;left:-50px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(15,110,86,0.2) 0%,transparent 70%);pointer-events:none}
+.how-section .sec-label{color:var(--teal-m)}
+.how-section .sec-label::after{background:var(--teal-m)}
+.how-section h2{color:white}
+.how-section h2 em{color:var(--plum-m)}
+.how-section .sec-sub{color:rgba(255,255,255,.45)}
+.steps-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px;position:relative;z-index:1}
+.steps-list{display:flex;flex-direction:column;gap:0}
+.step-item{
+  display:flex;gap:24px;padding:32px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;
+  transition:all .2s;opacity:.5;
+}
+.step-item.active,.step-item:hover{opacity:1}
+.step-item.active .step-num-wrap{background:var(--teal);border-color:var(--teal)}
+.step-num-wrap{
+  width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'Cormorant Garamond',serif;font-size:20px;color:white;
+  background:rgba(255,255,255,.04);transition:all .3s;
+}
+.step-text-title{font-size:16px;font-weight:500;color:white;margin-bottom:8px}
+.step-text-desc{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7}
+.steps-preview{position:relative}
+.step-visual{display:none;animation:fadeSlide .4s ease}
+.step-visual.active{display:block}
+.step-visual-img{width:100%;height:440px;object-fit:cover;border-radius:20px}
+.step-visual-overlay{
+  position:absolute;bottom:24px;left:24px;right:24px;
+  background:rgba(28,26,46,.85);backdrop-filter:blur(12px);
+  border-radius:16px;padding:20px 24px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.svo-title{font-size:14px;font-weight:500;color:white;margin-bottom:6px}
+.svo-text{font-size:12px;color:rgba(255,255,255,.5);line-height:1.6}
+
+/* ── TESTIMONIALS ── */
+.testimonials-section{background:var(--warm)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.testimonial-card{
+  background:white;border-radius:20px;padding:36px 32px;
+  border:1px solid rgba(74,58,107,0.06);
+  transition:transform .25s,box-shadow .25s;
+  position:relative;overflow:hidden;
+}
+.testimonial-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(to right,var(--plum),var(--teal));
+  transform:scaleX(0);transform-origin:left;transition:transform .3s;
+}
+.testimonial-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(28,26,46,0.1)}
+.testimonial-card:hover::before{transform:scaleX(1)}
+.quote-mark{font-family:'Cormorant Garamond',serif;font-size:72px;line-height:.8;color:var(--plum-l);margin-bottom:16px;display:block}
+.testimonial-text{font-size:15px;color:var(--mid);line-height:1.75;margin-bottom:28px;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.author-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;background:var(--plum-l)}
+.author-avatar-placeholder{width:44px;height:44px;border-radius:50%;background:var(--plum-l);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--plum);flex-shrink:0}
+.author-name{font-size:14px;font-weight:500;color:var(--ink)}
+.author-detail{font-size:12px;color:var(--light)}
+
+/* ── STATS ── */
+.stats-section{background:var(--plum);padding:80px 64px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:48px;margin-top:48px}
+.stat-item{text-align:center}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:white;line-height:1;margin-bottom:8px}
+.stat-label{font-size:14px;color:rgba(255,255,255,.6);font-weight:300}
+.stat-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px}
+.stats-header{text-align:center}
+.stats-section .sec-label{justify-content:center;color:var(--rose)}
+.stats-section .sec-label::after{display:none}
+.stats-section h2{color:white;text-align:center}
+
+/* ── FEATURES GRID ── */
+.features-section{background:white}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px;border-radius:20px;overflow:hidden;border:1px solid rgba(74,58,107,.08)}
+.feature-card{padding:40px 36px;background:white;transition:background .25s;position:relative}
+.feature-card:hover{background:var(--plum-l)}
+.feature-icon{width:48px;height:48px;border-radius:14px;background:var(--teal-l);display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:22px}
+.feature-title{font-size:18px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.feature-desc{font-size:14px;color:var(--mid);line-height:1.7}
+
+/* ── WAITLIST ── */
+.waitlist-section{
+  background:linear-gradient(150deg,#1C1A2E 0%,#2C1F4A 50%,#0F2E24 100%);
+  position:relative;overflow:hidden;text-align:center;
+}
+.wl-bg1{position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(74,58,107,.4) 0%,transparent 70%);pointer-events:none}
+.wl-bg2{position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(15,110,86,.3) 0%,transparent 70%);pointer-events:none}
+.waitlist-section .sec-label{color:var(--rose);justify-content:center}
+.waitlist-section .sec-label::after{display:none}
+.waitlist-section h2{color:white;max-width:580px;margin:0 auto 16px}
+.waitlist-section h2 em{color:var(--rose)}
+.waitlist-section .sec-sub{color:rgba(255,255,255,.5);margin:0 auto 48px;text-align:center}
+.wl-form{display:flex;gap:10px;justify-content:center;max-width:520px;margin:0 auto 20px;position:relative;z-index:1;flex-wrap:wrap}
+.wl-input{
+  flex:1;min-width:220px;padding:16px 24px;border-radius:100px;
+  border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);
+  color:white;font-size:15px;font-family:'DM Sans',sans-serif;
+  outline:none;transition:border-color .2s;backdrop-filter:blur(8px);
+}
+.wl-input::placeholder{color:rgba(255,255,255,.35)}
+.wl-input:focus{border-color:rgba(255,255,255,.4)}
+.btn-wl{
+  background:var(--teal);color:white;padding:16px 32px;border-radius:100px;
+  font-size:15px;font-weight:500;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .25s;white-space:nowrap;
+}
+.btn-wl:hover{background:var(--teal-m);transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,110,86,.4)}
+.wl-note{font-size:12px;color:rgba(255,255,255,.3);position:relative;z-index:1;margin-bottom:48px}
+.wl-perks{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.perk-item{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.45)}
+.perk-check{width:18px;height:18px;border-radius:50%;background:rgba(29,158,117,.2);color:var(--teal-m);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;line-height:18px;text-align:center}
+.success-box{display:none;background:rgba(29,158,117,.15);border:1px solid rgba(29,158,117,.3);border-radius:16px;padding:24px 36px;max-width:440px;margin:0 auto 20px;position:relative;z-index:1}
+.success-icon{font-size:32px;display:block;margin-bottom:12px}
+.success-title{font-size:18px;font-weight:500;color:white;margin-bottom:8px}
+.success-sub{font-size:14px;color:rgba(255,255,255,.5)}
+
+/* ── FOOTER ── */
+footer{background:#0E0D1A;padding:60px 64px 40px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:48px}
+.footer-brand .footer-logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:white;display:block;margin-bottom:16px}
+.footer-brand .footer-logo span{color:var(--teal-m);font-style:italic}
+.footer-tagline{font-size:14px;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:24px}
+.footer-medical-note{font-size:11px;color:rgba(255,255,255,.2);line-height:1.6;border-top:1px solid rgba(255,255,255,.06);padding-top:16px}
+.footer-col-title{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:20px;font-weight:500}
+.footer-col-links{display:flex;flex-direction:column;gap:10px}
+.footer-col-link{font-size:14px;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.footer-col-link:hover{color:rgba(255,255,255,.8)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:32px;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap;gap:16px}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.2)}
+.footer-bottom-links{display:flex;gap:24px}
+
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  nav{padding:16px 32px}
+  nav.scrolled{padding:12px 32px}
+  .hero{grid-template-columns:1fr;padding:100px 32px 60px;gap:48px}
+  .hero-visual{height:380px}
+  section{padding:72px 32px}
+  .for-layout{grid-template-columns:1fr;gap:40px}
+  .for-tabs{flex-direction:row;border-left:none;border-bottom:2px solid rgba(74,58,107,.1);overflow-x:auto}
+  .for-tab{border-left:none;border-bottom:2px solid transparent;margin-left:0;margin-bottom:-2px;white-space:nowrap;padding:16px 24px}
+  .for-tab.active{border-left:none;border-bottom-color:var(--plum)}
+  .steps-layout{grid-template-columns:1fr;gap:40px}
+  .testimonials-grid{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr 1fr;gap:40px}
+  .logos-strip{padding:16px 32px;gap:16px}
+  .stats-section{padding:60px 32px}
+}
+@media(max-width:680px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .hero{padding:88px 20px 48px;gap:32px}
+  .hero-visual{display:none}
+  section{padding:56px 20px}
+  .for-layout{gap:28px}
+  .testimonials-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .features-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+  .wl-form{flex-direction:column}
+  .wl-input{min-width:unset}
+  .logos-strip{flex-direction:column;gap:12px;align-items:flex-start}
+  .logos-items{gap:20px}
+  .medical-pill{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">OncoYoga <span>AI</span></a>
+  <div class="nav-links">
+    <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+    <a href="#para-quien" class="nav-link">Para quién</a>
+    <a href="#evidencia" class="nav-link">Evidencia</a>
+  </div>
+  <a href="https://oncoyoga-ai-085abc0b.base44.app/register" class="nav-cta">Acceso anticipado</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob"></div>
+  <div class="hero-content reveal">
+    <div class="badge"><div class="badge-dot"></div>Primera plataforma EU · Yoga Oncológico + IA</div>
+    <h1>El yoga que<br><em>acompaña</em><br>el <span class="green">camino</span><br>del cáncer</h1>
+    <p class="hero-sub">Rutinas de yoga oncológico personalizadas por inteligencia artificial según tu diagnóstico, fase del tratamiento y cómo te sientes hoy.</p>
+    <div class="hero-actions">
+      <a href="https://oncoyoga-ai-085abc0b.base44.app/register" class="btn-primary">Quiero acceso anticipado</a>
+      <a href="#como-funciona" class="btn-ghost">Ver cómo funciona</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Respaldado médicamente
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Cumple RGPD
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        15 rutinas clínicas
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="img-mosaic">
+      <div class="img-card">
+        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80&auto=format&fit=crop" alt="Yoga suave y meditativo"/>
+      </div>
+      <div class="img-card">
+        <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80&auto=format&fit=crop" alt="Meditación y respiración"/>
+      </div>
+      <div class="img-card">
+        <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=500&q=80&auto=format&fit=crop" alt="Bienestar y calma"/>
+      </div>
+      <div class="img-pill top">
+        <div class="pill-icon green">🌿</div>
+        <div>
+          <div class="pill-text-main">15 rutinas clínicas</div>
+          <div class="pill-text-sub">Validadas médicamente</div>
+        </div>
+      </div>
+      <div class="img-pill bottom">
+        <div class="pill-icon purple">✨</div>
+        <div>
+          <div class="pill-text-main">IA personalizada</div>
+          <div class="pill-text-sub">Se adapta a ti cada día</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS STRIP -->
+<div class="logos-strip">
+  <span class="logos-label">Evidencia científica</span>
+  <div class="logos-items">
+    <span class="logo-item"><span class="logo-dot"></span>American Cancer Society</span>
+    <span class="logo-item"><span class="logo-dot"></span>MD Anderson Cancer Center</span>
+    <span class="logo-item"><span class="logo-dot"></span>Memorial Sloan Kettering</span>
+    <span class="logo-item"><span class="logo-dot"></span>ASCO 2024</span>
+    <span class="logo-item"><span class="logo-dot"></span>Europe's Beating Cancer Plan</span>
+  </div>
+  <div class="medical-pill">
+    <div class="med-dot"></div>
+    <span class="med-text">Dra. Oriana Brito · Asesora Médica</span>
+  </div>
+</div>
+
+<!-- FOR WHOM -->
+<section class="for-section" id="para-quien">
+  <div class="sec-label">Para quién</div>
+  <h2>Un espacio para <em>cada uno</em><br>en el camino del cáncer</h2>
+  <p class="sec-sub">OncoYoga AI adapta cada sesión a quién eres, qué tienes y cómo estás hoy.</p>
+  <div class="for-layout reveal">
+    <div class="for-tabs">
+      <div class="for-tab active" onclick="showTab(0)">
+        <div class="for-tab-num">01</div>
+        <div class="for-tab-title">Pacientes oncológicos</div>
+        <div class="for-tab-short">Yoga adaptado a tu diagnóstico</div>
+      </div>
+      <div class="for-tab" onclick="showTab(1)">
+        <div class="for-tab-num">02</div>
+        <div class="for-tab-title">Cuidadores y familias</div>
+        <div class="for-tab-short">Un espacio para quien cuida</div>
+      </div>
+      <div class="for-tab" onclick="showTab(2)">
+        <div class="for-tab-num">03</div>
+        <div class="for-tab-title">Niños y adolescentes</div>
+        <div class="for-tab-short">Práctica lúdica y adaptada</div>
+      </div>
+    </div>
+    <div class="for-content">
+      <div class="for-panel active" id="panel-0">
+        <img class="for-img" src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=900&q=80&auto=format&fit=crop" alt="Yoga oncológico para pacientes"/>
+        <p class="for-desc">Rutinas diseñadas clínicamente para cada tipo de cáncer — mama, próstata, pulmón, ginecológico, colorrectal, tiroides, linfoma y más. Adaptadas a tu fase de tratamiento: quimioterapia activa, radioterapia, post-cirugía, remisión o cuidados paliativos.</p>
+        <div class="for-features">
+          <div class="for-feature">Modificaciones específicas para linfedema, catéter, ostomía y metástasis ósea</div>
+          <div class="for-feature">Check-in diario de energía y dolor para ajustar la práctica</div>
+          <div class="for-feature">Poses sentadas, en cama y de bajo impacto para días difíciles</div>
+          <div class="for-feature">Botón de parada de emergencia en todas las sesiones</div>
+        </div>
+      </div>
+      <div class="for-panel" id="panel-1">
+        <img class="for-img" src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=900&q=80&auto=format&fit=crop" alt="Cuidadores y familias"/>
+        <p class="for-desc">El agotamiento del cuidador es real e invisible. OncoYoga AI tiene un espacio propio para quien sostiene a otros — rutinas de recarga rápida, meditaciones de autocompasión y una comunidad de personas que entienden lo que es cuidar a alguien con cáncer.</p>
+        <div class="for-features">
+          <div class="for-feature">Rutinas de 15 minutos diseñadas para la realidad del cuidador</div>
+          <div class="for-feature">Círculo de Cuidadores — comunidad de apoyo privada</div>
+          <div class="for-feature">Yoga en familia para practicar juntos paciente y cuidador</div>
+          <div class="for-feature">Meditaciones de autocompasión y gestión del burnout</div>
+        </div>
+      </div>
+      <div class="for-panel" id="panel-2">
+        <img class="for-img" src="https://images.unsplash.com/photo-1491013516836-7db643ee125a?w=900&q=80&auto=format&fit=crop" alt="Yoga para niños y adolescentes con cáncer"/>
+        <p class="for-desc">Prácticas diseñadas para las necesidades únicas de los más jóvenes — con juego, animales e imaginación para los más pequeños, y con respeto a la autonomía e identidad para los adolescentes. Porque el cáncer también ocurre en la infancia y la adolescencia.</p>
+        <div class="for-features">
+          <div class="for-feature">Yoga lúdico para niños de 4 a 10 años: dragones, estrellas de mar y nubes mágicas</div>
+          <div class="for-feature">Práctica para adolescentes enfocada en imagen corporal y fuerza interior</div>
+          <div class="for-feature">Yoga familiar para practicar padres e hijos juntos</div>
+          <div class="for-feature">Siempre con supervisión del adulto y sin forzar jamás</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="como-funciona">
+  <div class="how-glow"></div>
+  <div class="how-glow2"></div>
+  <div class="sec-label">Cómo funciona</div>
+  <h2>Personalizado desde<br>el primer <em>momento</em></h2>
+  <p class="sec-sub">La IA aprende de tu diagnóstico, tus síntomas y tu energía del día para recomendarte exactamente la práctica que necesitas ahora.</p>
+  <div class="steps-layout reveal">
+    <div class="steps-list">
+      <div class="step-item active" onclick="showStep(0)">
+        <div class="step-num-wrap">1</div>
+        <div>
+          <div class="step-text-title">Tu perfil médico</div>
+          <div class="step-text-desc">Nos cuentas tu diagnóstico, tipo de cáncer, fase del tratamiento y limitaciones físicas. Privado y seguro (RGPD).</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="showStep(1)">
+        <div class="step-num-wrap">2</div>
+        <div>
+          <div class="step-text-title">Check-in diario</div>
+          <div class="step-text-desc">Cada día te preguntamos cómo estás: energía, dolor y estado de ánimo. La IA ajusta las recomendaciones en tiempo real.</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="showStep(2)">
+        <div class="step-num-wrap">3</div>
+        <div>
+          <div class="step-text-title">Tu rutina personalizada</div>
+          <div class="step-text-desc">Recibes una práctica adaptada específicamente para ti hoy — con instrucciones, modificaciones y tu ritmo.</div>
+        </div>
+      </div>
+      <div class="step-item" onclick="showStep(3)">
+        <div class="step-num-wrap">4</div>
+        <div>
+          <div class="step-text-title">Progreso y comunidad</div>
+          <div class="step-text-desc">Registra tu evolución, conecta con personas que entienden tu camino y accede a meditaciones cuando las necesites.</div>
+        </div>
+      </div>
+    </div>
+    <div class="steps-preview">
+      <div class="step-visual active" id="step-0">
+        <img class="step-visual-img" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=700&q=80&auto=format&fit=crop" alt="Perfil médico personalizado"/>
+        <div class="step-visual-overlay">
+          <div class="svo-title">Perfil médico adaptativo</div>
+          <div class="svo-text">La app aprende de tu diagnóstico y lo usa para personalizar cada sesión desde el primer día.</div>
+        </div>
+      </div>
+      <div class="step-visual" id="step-1">
+        <img class="step-visual-img" src="https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?w=700&q=80&auto=format&fit=crop" alt="Check-in diario de bienestar"/>
+        <div class="step-visual-overlay">
+          <div class="svo-title">Check-in diario inteligente</div>
+          <div class="svo-text">Nivel de energía del 1 al 10, dolor, estado de ánimo. 30 segundos que cambian toda la sesión.</div>
+        </div>
+      </div>
+      <div class="step-visual" id="step-2">
+        <img class="step-visual-img" src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=700&q=80&auto=format&fit=crop" alt="Práctica de yoga personalizada"/>
+        <div class="step-visual-overlay">
+          <div class="svo-title">Práctica hecha para ti, hoy</div>
+          <div class="svo-text">Instrucciones paso a paso, timer, modificaciones clínicas y botón de parada de emergencia.</div>
+        </div>
+      </div>
+      <div class="step-visual" id="step-3">
+        <img class="step-visual-img" src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=700&q=80&auto=format&fit=crop" alt="Comunidad de apoyo oncológico"/>
+        <div class="step-visual-overlay">
+          <div class="svo-title">Nunca solo en el camino</div>
+          <div class="svo-text">Comunidad privada, registro de progreso y asistente IA disponible 24/7.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="evidencia">
+  <div class="sec-label">Testimonios</div>
+  <h2>Voces del <em>camino</em></h2>
+  <p class="sec-sub">Personas reales que practican yoga oncológico y han transformado su experiencia del tratamiento.</p>
+  <div class="testimonials-grid reveal">
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">El yoga oncológico fue lo único que me ayudó a dormir durante la quimioterapia. Tener una práctica adaptada a mis limitaciones lo cambió todo.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar-placeholder">M</div>
+        <div>
+          <div class="author-name">María G.</div>
+          <div class="author-detail">Cáncer de mama, estadio II · España</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">Como cuidador de mi madre, nunca había pensado en mi propio bienestar. Descubrir que había un espacio para mí también fue un regalo inesperado.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar-placeholder">R</div>
+        <div>
+          <div class="author-name">Roberto L.</div>
+          <div class="author-detail">Cuidador · Portugal</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="testimonial-text">La fatiga post-quimio era devastadora. Las rutinas de yoga diseñadas para ese momento específico fueron mi ancla durante meses de tratamiento.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar-placeholder">A</div>
+        <div>
+          <div class="author-name">Ana P.</div>
+          <div class="author-detail">Linfoma · Italia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-header">
+    <div class="sec-label">El mercado</div>
+    <h2>Un problema <em>enorme</em><br>sin solución digital</h2>
+  </div>
+  <div class="stats-grid reveal">
+    <div class="stat-item">
+      <div class="stat-num">2.7M</div>
+      <div class="stat-label">Nuevos diagnósticos al año</div>
+      <div class="stat-sub">en la Unión Europea</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">40%</div>
+      <div class="stat-label">Reducción de la fatiga</div>
+      <div class="stat-sub">con yoga oncológico regular</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">€85B</div>
+      <div class="stat-label">Mercado mHealth EU</div>
+      <div class="stat-sub">para 2029 · CAGR 25%</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Apps de yoga oncológico</div>
+      <div class="stat-sub">con IA en Europa · hoy</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="sec-label">La plataforma</div>
+  <h2>Todo lo que <em>necesitas</em><br>en un solo lugar</h2>
+  <p class="sec-sub">Diseñado para ser accesible en el momento más difícil. Sin complicaciones. Sin distracciones.</p>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <div class="feature-title">IA que te conoce</div>
+      <p class="feature-desc">La inteligencia artificial aprende de tu perfil médico, tu historial de sesiones y tu check-in diario para recomendarte la práctica exacta que necesitas.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧘</div>
+      <div class="feature-title">15 rutinas clínicas</div>
+      <p class="feature-desc">Diseñadas para los 8 tipos de cáncer más prevalentes en Europa. Con modificaciones específicas para linfedema, catéter, ostomía y más.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🫁</div>
+      <div class="feature-title">Mindfulness integrado</div>
+      <p class="feature-desc">Meditaciones vipassana y anapana, técnicas de respiración para ansiedad, visualizaciones para el dolor y prácticas para el insomnio.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Seguimiento de progreso</div>
+      <p class="feature-desc">Registro diario de energía, dolor y estado de ánimo. Visualiza tu evolución semana a semana y celebra cada paso del camino.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👥</div>
+      <div class="feature-title">Comunidad privada</div>
+      <p class="feature-desc">Un espacio seguro para conectar con personas que entienden tu experiencia. Pacientes, cuidadores y familias apoyándose mutuamente.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <div class="feature-title">Privacidad RGPD</div>
+      <p class="feature-desc">Tus datos médicos son tuyos. Cifrado completo, control total sobre tu información y cumplimiento estricto del Reglamento General de Protección de Datos de la UE.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist-section" id="waitlist">
+  <div class="wl-bg1"></div>
+  <div class="wl-bg2"></div>
+  <div class="sec-label">Lista de espera</div>
+  <h2>Sé de los <em>primeros</em><br>en acceder</h2>
+  <p class="sec-sub">Estamos preparando el lanzamiento beta en España. Únete ahora y accede antes que nadie — sin coste, sin compromiso.</p>
+  <form class="wl-form" id="wlForm">
+    <input type="email" class="wl-input" placeholder="Tu email" required id="wlEmail"/>
+    <button type="submit" class="btn-wl">Quiero acceso anticipado</button>
+  </form>
+  <div class="success-box" id="successBox">
+    <span class="success-icon">🌿</span>
+    <div class="success-title">¡Ya estás en la lista!</div>
+    <p class="success-sub">Te avisamos cuando abramos el acceso beta. Serás de los primeros en probar OncoYoga AI.</p>
+  </div>
+  <p class="wl-note">Sin spam · Sin compromiso · Solo te avisamos cuando estemos listos</p>
+  <div class="wl-perks">
+    <div class="perk-item"><div class="perk-check">✓</div>Acceso beta gratuito</div>
+    <div class="perk-item"><div class="perk-check">✓</div>Rutinas personalizadas desde el día 1</div>
+    <div class="perk-item"><div class="perk-check">✓</div>Comunidad privada de lanzamiento</div>
+    <div class="perk-item"><div class="perk-check">✓</div>Cancela cuando quieras</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="footer-logo">OncoYoga <span>AI</span></span>
+      <p class="footer-tagline">La primera plataforma de yoga oncológico personalizado con inteligencia artificial de la Unión Europea. Para pacientes, cuidadores y familias.</p>
+      <p class="footer-medical-note">Contenido revisado médicamente por la Dra. Oriana Brito, Asesora Médica de OncoYoga AI. Esta plataforma es una herramienta de bienestar complementario y no reemplaza el tratamiento médico ni el consejo de su oncólogo.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Plataforma</div>
+      <div class="footer-col-links">
+        <a href="#como-funciona" class="footer-col-link">Cómo funciona</a>
+        <a href="#para-quien" class="footer-col-link">Para quién</a>
+        <a href="#" class="footer-col-link">Rutinas</a>
+        <a href="#" class="footer-col-link">Mindfulness</a>
+        <a href="#" class="footer-col-link">Comunidad</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Proyecto</div>
+      <div class="footer-col-links">
+        <a href="#" class="footer-col-link">Sobre nosotros</a>
+        <a href="#" class="footer-col-link">Evidencia científica</a>
+        <a href="#" class="footer-col-link">Asesora médica</a>
+        <a href="https://oncoyoga-ai-085abc0b.base44.app/register" class="footer-col-link">Lista de espera</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <div class="footer-col-links">
+        <a href="#" class="footer-col-link">Política de privacidad</a>
+        <a href="#" class="footer-col-link">Aviso legal</a>
+        <a href="#" class="footer-col-link">Cookies</a>
+        <a href="/cdn-cgi/l/email-protection#8ee6e1e2efcee1e0ede1f7e1e9efefe7a0ede1e3" class="footer-col-link">Contacto</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 OncoYoga AI · Viviana Labarca · oncoyogaai.com · Todos los derechos reservados</p>
+    <div class="footer-bottom-links">
+      <a href="#" class="footer-col-link">Privacidad</a>
+      <a href="#" class="footer-col-link">Legal</a>
+      <a href="/cdn-cgi/l/email-protection#afc7c0c3ceefc0c1ccc0d6c0c8cecec681ccc0c2" class="footer-col-link"><span class="__cf_email__" data-cfemail="59313635381936373a3620363e383830773a3634">[email&#160;protected]</span></a>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }});
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// For whom tabs
+function showTab(i) {
+  document.querySelectorAll('.for-tab').forEach((t,idx) => t.classList.toggle('active', idx===i));
+  document.querySelectorAll('.for-panel').forEach((p,idx) => p.classList.toggle('active', idx===i));
+}
+
+// How it works steps
+function showStep(i) {
+  document.querySelectorAll('.step-item').forEach((s,idx) => s.classList.toggle('active', idx===i));
+  document.querySelectorAll('.step-visual').forEach((v,idx) => v.classList.toggle('active', idx===i));
+}
+
+// Auto-advance steps every 4s
+let stepIdx = 0;
+setInterval(() => {
+  stepIdx = (stepIdx + 1) % 4;
+  showStep(stepIdx);
+}, 4000);
+
+// Waitlist form
+document.getElementById('wlForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('wlEmail').value;
+  if(email) {
+    this.style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+  }
+});
+
+// Smooth nav lin
