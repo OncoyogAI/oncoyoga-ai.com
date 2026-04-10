@@ -193,7 +193,7 @@ footer{background:#0E0D1A;padding:48px 60px}
 
 <nav id="nav">
   <a href="#" class="logo">OncoYoga <span>AI</span></a>
-  <a href="https://oncoyoga-ai.com" class="nav-btn">Entrar a la app</a>
+  <span style="background:var(--teal-l);color:var(--teal);padding:8px 18px;border-radius:100px;font-size:12px;font-weight:500;letter-spacing:.04em">🌿 Próximamente en beta</span>
 </nav>
 
 <!-- HERO -->
@@ -210,8 +210,8 @@ footer{background:#0E0D1A;padding:48px 60px}
     <h1>El yoga que <em>acompaña</em><br>el camino del cáncer</h1>
     <p class="hero-sub">Rutinas de yoga oncológico personalizadas por inteligencia artificial según tu diagnóstico, fase del tratamiento y cómo te sientes hoy.</p>
     <div class="btns">
-      <a href="https://oncoyoga-ai.com/register" class="btn-p">Comenzar ahora — es gratis</a>
-      <a href="https://oncoyoga-ai.com" class="btn-s">Ya tengo cuenta</a>
+      <a href="#acceso" class="btn-p">Quiero acceso anticipado</a>
+      <a href="#como-funciona" class="btn-s">Ver cómo funciona</a>
     </div>
   </div>
 </section>
@@ -372,14 +372,14 @@ footer{background:#0E0D1A;padding:48px 60px}
     <div class="footer-logo">OncoYoga <span>AI</span></div>
     <p class="footer-note">Contenido revisado médicamente por la Dra. Oriana Brito, Asesora Médica. OncoYoga AI es una herramienta de bienestar complementario y no reemplaza el tratamiento médico.</p>
     <div class="footer-links">
-      <a href="https://oncoyoga-ai.com" class="footer-link">Entrar a la app</a>
-      <a href="mailto:hola@oncoyoga-ai.com" class="footer-link">Contacto</a>
+      <a href="mailto:hola@oncoyoga-ai.com" class="footer-link">hola@oncoyoga-ai.com</a>
+      <a href="/cdn-cgi/l/email-protection#89e1e6e5e8c9e6e7eae6f0e6eee8a4e8e0a7eae6e4" class="footer-link">Contacto</a>
     </div>
   </div>
   <p style="font-size:11px;color:rgba(255,255,255,.15);text-align:center;margin-top:32px">© 2025 OncoYoga AI · oncoyoga-ai.com · Todos los derechos reservados</p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Nav scroll
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>40));
 
@@ -414,10 +414,4 @@ document.getElementById('wlForm').addEventListener('submit',function(e){
 // Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click',e=>{
-    const t=document.querySelector(a.getAttribute('href'));
-    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
-  });
-});
-</script>
-</body>
-</html>
+    const t=d
